@@ -1,0 +1,243 @@
+
+<!doctype html>
+<html lang="fa">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title> — madsmart13</title>
+  <style>
+    /* طراحی گیمینگ نئونی — راست‌چین */
+    :root{
+      --bg1:#030417; --bg2:#061a2a;
+      --card:#081826; --muted:#9fb0c9;
+      --neon1:#00f0ff; --neon2:#ff4de0;
+    }
+    html,body{height:100%;margin:0;font-family:Vazirmatn, Tahoma, "Segoe UI", Roboto, sans-serif;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#eaf6ff;direction:rtl}
+    .wrap{max-width:1100px;margin:28px auto;padding:18px}
+    header{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .brand{width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,#041223,#063143);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--neon1);font-size:20px;border:1px solid rgba(255,255,255,0.03)}
+    h1{margin:0;font-size:1.6rem}
+    p.lead{margin:4px 0 0;color:var(--muted)}
+    .controls{display:flex;gap:10px;margin-top:12px;align-items:center;flex-wrap:wrap}
+    input.search{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:rgba(255,255,255,0.02);color:inherit;min-width:260px}
+    .btn{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);color:var(--neon1);cursor:pointer;font-weight:700}
+    .btn.ghost{color:var(--muted);border-style:dashed}
+    .stats{margin-left:auto;color:var(--muted);font-size:0.95rem}
+    .list{margin-top:18px;display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:900px){ .list{grid-template-columns:1fr 1fr 1fr} }
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:12px;border:1px solid rgba(123,224,255,0.04);display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;transition:transform .18s ease}
+    .card:hover{transform:translateY(-6px)}
+    .badge{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--neon1),var(--neon2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#041722;font-size:20px;flex-shrink:0}
+    .top{display:flex;align-items:center;gap:10px}
+    .meta h3{margin:0;font-size:1.02rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .meta p{margin:6px 0 0;color:var(--muted);font-size:0.92rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .foot{display:flex;gap:8px;align-items:center;margin-top:8px}
+    .linkbtn{flex:1;padding:8px 10px;border-radius:10px;border:0;background:linear-gradient(90deg, rgba(0,240,255,0.06), rgba(255,77,224,0.04));color:var(--neon1);font-weight:800;cursor:pointer}
+    .small{padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:rgba(255,255,255,0.02);color:var(--muted);font-size:0.86rem}
+    .tag{position:absolute;top:10px;left:10px;background:linear-gradient(90deg,#ff7dd6,#00f0ff);padding:6px 8px;border-radius:8px;color:#041722;font-weight:700;font-size:0.78rem}
+    .loader{display:inline-block;border:3px solid rgba(255,255,255,0.04);border-top-color:var(--neon1);border-radius:50%;width:16px;height:16px;animation:spin .9s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .exportBox{width:100%;min-height:80px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.02);color:var(--muted);font-family:monospace;font-size:0.9rem;overflow:auto;margin-top:8px}
+    footer{margin-top:20px;color:var(--muted);text-align:center;font-size:0.9rem}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">PHX</div>
+      <div>
+        <h1> Links.P - madsmart13</h1>
+        <p class="lead">این صفحه همهٔ .</p>
+        <div class="controls">
+          <input id="search" class="search" placeholder="جستجو: نام، توضیح یا آدرس..." />
+          <button id="refresh" class="btn">بارگذاری <span id="spin" style="margin-inline-start:8px;display:none;"><span class="loader"></span></span></button>
+          <button id="openAll" class="btn">باز کردن همه (تب جدید)</button>
+          <button id="exportStatic" class="btn ghost">تولید HTML استاتیک</button>
+          <div class="stats" id="stats">در حال آماده‌سازی...</div>
+        </div>
+      </div>
+    </header>
+
+    <div style="margin-top:10px;color:var(--muted)">نام کاربری پیش‌فرض: <strong id="ghUser">madsmart13</strong> — برای حساب دیگر، مقدار GITHUB_USER را در کد تغییر بده.</div>
+
+    <div id="list" class="list" aria-live="polite"></div>
+
+    <div style="margin-top:18px">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+        <div style="font-weight:800;color:var(--muted)">خروجی استاتیک (قابل کپی):</div>
+        <button id="copyExport" class="btn ghost">کپی به کلیپ‌بورد</button>
+      </div>
+      <div id="exportBox" class="exportBox">برای تولید HTML استاتیک، روی "تولید HTML استاتیک" کلیک کن.</div>
+    </div>
+
+    <footer>این فایل را در index.html ریپوی خود قرار بده و GitHub Pages را فعال کن.</footer>
+  </div>
+
+  <script>
+    // ===== تنظیمات =====
+    const GITHUB_USER = 'madsmart13'; // <-- نام کاربری گیت‌هاب تو (تغییر بده در صورت نیاز)
+    const MAX_REPOS = 500;            // حداکثر مخزن واکشی‌شده (صفحهبندی خواهد شد)
+    // اگر میخوای از توکن استفاده کنی (برای رفع rate limit)، مقدار زیر را با توکن ست کن:
+    // const GITHUB_TOKEN = 'ghp_...';
+    const GITHUB_TOKEN = ''; // خالی بذار اگر توکن ندارى
+    // =====================
+
+    document.getElementById('ghUser').textContent = GITHUB_USER;
+    const listEl = document.getElementById('list');
+    const statsEl = document.getElementById('stats');
+    const searchEl = document.getElementById('search');
+    const refreshBtn = document.getElementById('refresh');
+    const spin = document.getElementById('spin');
+    const openAllBtn = document.getElementById('openAll');
+    const exportBtn = document.getElementById('exportStatic');
+    const exportBox = document.getElementById('exportBox');
+    const copyExport = document.getElementById('copyExport');
+
+    let repos = [];
+
+    function showLoading(on=true){
+      spin.style.display = on ? 'inline-block' : 'none';
+      refreshBtn.disabled = on;
+      searchEl.disabled = on;
+    }
+
+    function fmtDate(iso){
+      try{ return new Date(iso).toLocaleString('fa-IR'); } catch(e){ return iso; }
+    }
+
+    function repoLink(r){
+      const hp = (r.homepage || '').trim();
+      if(hp.length>0) return hp.startsWith('http') ? hp : 'http://' + hp;
+      return r.html_url;
+    }
+
+    function render(items){
+      listEl.innerHTML = '';
+      if(!items || items.length===0){
+        listEl.innerHTML = '<div style="padding:14px;border-radius:10px;background:rgba(255,255,255,0.02);color:var(--muted)">موردی یافت نشد.</div>';
+        return;
+      }
+      items.forEach(r=>{
+        const link = repoLink(r);
+        const card = document.createElement('div'); card.className='card';
+        const tag = document.createElement('div'); tag.className='tag'; tag.textContent = (r.homepage && r.homepage.trim()) ? 'سایت' : 'ریپو';
+        const top = document.createElement('div'); top.className='top';
+        const badge = document.createElement('div'); badge.className='badge'; badge.textContent = (r.name && r.name[0]) ? r.name[0].toUpperCase() : 'P';
+        const meta = document.createElement('div'); meta.className='meta';
+        const h3 = document.createElement('h3'); h3.textContent = r.name;
+        const p = document.createElement('p'); p.textContent = r.description ? r.description : ('آخرین بروزرسانی: ' + fmtDate(r.updated_at));
+        meta.appendChild(h3); meta.appendChild(p);
+        top.appendChild(badge); top.appendChild(meta);
+
+        const foot = document.createElement('div'); foot.className='foot';
+        const openBtn = document.createElement('button'); openBtn.className='linkbtn'; openBtn.textContent='رفتن به آدرس'; openBtn.onclick = ()=> window.open(link,'_blank');
+        const repoBtn = document.createElement('button'); repoBtn.className='small'; repoBtn.textContent='نمایش ریپو'; repoBtn.onclick = ()=> window.open(r.html_url,'_blank');
+        const copyBtn = document.createElement('button'); copyBtn.className='small'; copyBtn.textContent='کپی لینک'; copyBtn.onclick = ()=> { navigator.clipboard.writeText(link).then(()=> { copyBtn.textContent='کپی شد'; setTimeout(()=>copyBtn.textContent='کپی لینک',900); }) };
+        foot.appendChild(openBtn); foot.appendChild(repoBtn); foot.appendChild(copyBtn);
+
+        card.appendChild(tag);
+        card.appendChild(top);
+        card.appendChild(foot);
+        listEl.appendChild(card);
+      });
+    }
+
+    function updateStats(){
+      const total = repos.length;
+      const withSite = repos.filter(r=> r.homepage && r.homepage.trim().length>0).length;
+      statsEl.textContent = `مخازن: ${total} — دارای سایت: ${withSite}`;
+    }
+
+    function applyFilter(){
+      const q = (searchEl.value || '').trim().toLowerCase();
+      if(!q){ render(repos); updateStats(); return; }
+      const filtered = repos.filter(r=>{
+        return (r.name||'').toLowerCase().includes(q) || (r.description||'').toLowerCase().includes(q) || (r.homepage||'').toLowerCase().includes(q);
+      });
+      render(filtered);
+      statsEl.textContent = `نمایش: ${filtered.length} / ${repos.length}`;
+    }
+
+    async function fetchRepos(){
+      showLoading(true);
+      listEl.innerHTML = '<div style="padding:14px;border-radius:10px;background:rgba(255,255,255,0.02);color:var(--muted)"><span class="loader"></span> در حال بارگذاری...</div>';
+      statsEl.textContent = 'در حال واکشی از GitHub...';
+      try{
+        const perPage = 100;
+        const pages = Math.ceil(MAX_REPOS / perPage);
+        let all = [];
+        for(let p=1;p<=pages;p++){
+          const url = `https://api.github.com/users/${encodeURIComponent(GITHUB_USER)}/repos?per_page=${perPage}&page=${p}&type=owner`;
+          const headers = GITHUB_TOKEN ? { Authorization: 'token ' + GITHUB_TOKEN } : {};
+          const res = await fetch(url, { headers });
+          if(res.status===404) throw new Error('کاربر GitHub یافت نشد.');
+          if(res.status===403) {
+            // rate limit or blocked
+            const reset = res.headers.get('x-ratelimit-reset');
+            let msg = 'محدودیت API GitHub اعمال شده.';
+            if(reset) {
+              const t = new Date(parseInt(reset,10)*1000);
+              msg += ' تا ' + t.toLocaleString();
+            }
+            throw new Error(msg + ' (برای رفع از توکن استفاده کن)');
+          }
+          const data = await res.json();
+          if(!Array.isArray(data)) throw new Error('پاسخ نامعتبر از GitHub.');
+          all = all.concat(data);
+          if(data.length < perPage) break;
+        }
+        // مرتب‌سازی: پروژه‌هایی که homepage دارند اول، سپس تازگی بروزرسانی
+        all.sort((a,b)=>{
+          const ah = a.homepage && a.homepage.trim() ? 0 : 1;
+          const bh = b.homepage && b.homepage.trim() ? 0 : 1;
+          if(ah !== bh) return ah - bh;
+          return new Date(b.updated_at) - new Date(a.updated_at);
+        });
+        repos = all;
+        render(repos);
+        updateStats();
+      }catch(err){
+        listEl.innerHTML = `<div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);color:#f8b4b4">${err.message}</div>`;
+        statsEl.textContent = 'خطا در واکشی';
+        console.error(err);
+      }finally{ showLoading(false); }
+    }
+
+    openAllBtn.addEventListener('click', ()=>{
+      if(repos.length===0) return alert('هیچ مخزنی بارگذاری نشده.');
+      const max = 30;
+      if(repos.length > max && !confirm(`می‌خوای ${repos.length} تب باز کنی؟ (پیشنهاد: ابتدا فیلتر کن) — حداکثر توصیه‌شده ${max}`)) return;
+      repos.forEach(r=> window.open(repoLink(r), '_blank'));
+    });
+
+    refreshBtn.addEventListener('click', fetchRepos);
+    searchEl.addEventListener('input', applyFilter);
+
+    exportBtn.addEventListener('click', ()=>{
+      if(repos.length===0){ exportBox.textContent = 'لیست خالی است — ابتدا بارگذاری کن.'; return; }
+      const outLines = repos.map(r=>{
+        const link = repoLink(r);
+        const title = escapeHtml(r.name);
+        const desc = escapeHtml(r.description || '');
+        return `<p><a href="${link}" target="_blank">${title}</a>${desc ? ' — ' + desc : ''}</p>`;
+      });
+      const out = `<!-- Generated static list of ${repos.length} projects for ${GITHUB_USER} -->\n<div style="direction:rtl;font-family:Vazirmatn, Tahoma, sans-serif">\n${outLines.join('\n')}\n</div>`;
+      exportBox.textContent = out;
+    });
+
+    copyExport.addEventListener('click', ()=>{
+      const txt = exportBox.textContent || '';
+      if(!txt) return alert('هیچ خروجی ای موجود نیست.');
+      navigator.clipboard.writeText(txt).then(()=> alert('خروجی کپی شد.'));
+    });
+
+    function escapeHtml(s){
+      return (s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    // بارگذاری اولیه
+    fetchRepos();
+  </script>
+</body>
+</html>
+```
